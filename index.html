@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="assets/icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <title>Anglicare Waitara – AR massing</title>
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=4">
 <script type="importmap">
 { "imports": {
     "three": "./lib/three.module.js",
@@ -24,7 +24,7 @@
 <div id="stage"></div>
 
 <section id="home" class="panel">
-  <div class="brand">WMK Architecture · 25024</div>
+  <div class="brand">WMK Architecture · 25024 · app v4</div>
   <h1>Anglicare Waitara</h1>
   <p class="sub">AR massing model on the DA‑100 ground floor plan</p>
   <button id="btnAR" class="primary">Start AR camera</button>
@@ -43,6 +43,12 @@
       <span id="levelVal" class="val">All</span>
     </div>
     <div class="row">
+      <label>Lock</label>
+      <span class="val small">Tight</span>
+      <input id="smooth" type="range" min="0" max="6" step="1" value="1">
+      <span class="val small">Smooth</span>
+    </div>
+    <div class="row">
       <label><input id="sunOn" type="checkbox" checked> Sun</label>
       <select id="sunDate">
         <option value="6-21">21 Jun (winter)</option>
@@ -57,6 +63,6 @@
   <div id="info" class="card hidden"></div>
 </div>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=4"></script>
 </body>
 </html>

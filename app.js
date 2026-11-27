@@ -130,6 +130,19 @@ function addLights(sc) {
   sc.add(sun); sc.add(sun.target);
 }
 
+// ---------------------------------------------------------------- tracking smoothing (One-Euro filter)
+// level 0 = tightest lock (most responsive, more jitter) ... 6 = smoothest (more lag)
+const SMOOTH = [[0.01, 3000], [0.001, 1000], [0.001, 300], [0.0005, 100], [0.0003, 30], [0.0002, 10], [0.0001, 1]];
+function smoothLevel() { return parseInt($('smooth').value); }
+function applySmoothing() {
+  const [cf, beta] = SMOOTH[smoothLevel()];
+  try { localStorage.setItem('arSmooth', String(smoothLevel())); } catch (e) {}
+  const ctl = mindar && mindar.controller;
+  if (ctl && ctl.trackingStates) for (const st of ctl.trackingStates) { st.filter.minCutOff = cf; st.filter.beta = beta; }
+  if (ctl) { ctl.filterMinCF = cf; ctl.filterBeta = beta; }
+}
+try { const v = localStorage.getItem('arSmooth'); if (v !== null) document.getElementById('smooth').value = v; } catch (e) {}
+
 // ---------------------------------------------------------------- UI
 function applyLevel() {
   const L = parseInt($('level').value), max = parseInt($('level').max);
@@ -175,6 +188,7 @@ window.addEventListener('pointerup', e => {
 
 function wireControls() {
   $('level').oninput = applyLevel;
+  $('smooth').oninput = applySmoothing;
   for (const id of ['sunOn', 'sunDate', 'sunTime']) $(id).oninput = () => { sunLabel(); updateSun(); };
   $('sunDate').onchange = () => { sunLabel(); updateSun(); };
   $('btnBack').onclick = () => location.reload();
@@ -190,7 +204,7 @@ async function startAR() {
   const { MindARThree } = await import('mindar-image-three');
   mindar = new MindARThree({
     container: stage, imageTargetSrc: 'assets/targets.mind', maxTrack: 1,
-    filterMinCF: 0.0001, filterBeta: 0.001, warmupTolerance: 5, missTolerance: 10,
+    filterMinCF: SMOOTH[smoothLevel()][0], filterBeta: SMOOTH[smoothLevel()][1], warmupTolerance: 3, missTolerance: 5,
     uiLoading: 'yes', uiScanning: 'no', uiError: 'yes',
   });
   ({ renderer, scene, camera } = mindar);
@@ -209,6 +223,7 @@ async function startAR() {
   wireControls();
   try {
     await mindar.start();
+    applySmoothing();
   } catch (e) {
     $('status').textContent = 'Camera unavailable: ' + (e.message || e);
     return;
@@ -254,5 +269,5 @@ $('btnAR').onclick = startAR;
 $('btnPreview').onclick = startPreview;
 const q = new URLSearchParams(location.search);
 if (q.has('preview')) startPreview();
-if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js', { updateViaCache: 'none' }).catch(() => {});
 window.__app = { get selected() { return selected; }, select };
