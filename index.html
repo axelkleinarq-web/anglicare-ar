@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Anglicare AR">
+<meta name="theme-color" content="#111111">
+<link rel="apple-touch-icon" href="assets/icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Anglicare Waitara – AR massing</title>
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+    "three": "./lib/three.module.js",
+    "three/addons/": "./lib/addons/",
+    "mindar-image-three": "./lib/mindar-image-three.prod.js"
+} }
+</script>
+</head>
+<body>
+<div id="stage"></div>
+
+<section id="home" class="panel">
+  <div class="brand">WMK Architecture · 25024</div>
+  <h1>Anglicare Waitara</h1>
+  <p class="sub">AR massing model on the DA‑100 ground floor plan</p>
+  <button id="btnAR" class="primary">Start AR camera</button>
+  <button id="btnPreview">3D preview (no camera)</button>
+  <a class="link" href="assets/tracker_A3.pdf" target="_blank">Print the tracker plan (A3)</a>
+  <p class="hint">Print the tracker plan at A3 with no scaling and lay it flat in good light. Point the camera at the plan from about 40–60 cm away until the model appears.</p>
+</section>
+
+<div id="ui" class="hidden">
+  <button id="btnBack" class="chip">✕</button>
+  <div id="status" class="chip status">Point at the plan…</div>
+  <div id="controls">
+    <div class="row">
+      <label>Levels</label>
+      <input id="level" type="range" min="0" max="10" step="1" value="10">
+      <span id="levelVal" class="val">All</span>
+    </div>
+    <div class="row">
+      <label><input id="sunOn" type="checkbox" checked> Sun</label>
+      <select id="sunDate">
+        <option value="6-21">21 Jun (winter)</option>
+        <option value="3-21">21 Mar (equinox)</option>
+        <option value="9-23">23 Sep (equinox)</option>
+        <option value="12-21">21 Dec (summer)</option>
+      </select>
+      <input id="sunTime" type="range" min="7" max="18" step="0.25" value="12">
+      <span id="sunVal" class="val">12:00</span>
+    </div>
+  </div>
+  <div id="info" class="card hidden"></div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
